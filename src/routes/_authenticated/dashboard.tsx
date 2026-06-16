@@ -7,7 +7,11 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase as _supabase } from "@/integrations/supabase/client";
+const supabase = _supabase as unknown as {
+  auth: typeof _supabase.auth;
+  from: (table: string) => any;
+};
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
