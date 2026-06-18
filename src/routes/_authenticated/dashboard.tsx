@@ -45,10 +45,14 @@ function eur(n: number) {
 
 function Dashboard() {
   const qc = useQueryClient();
+  const [user, setUser] = useState<any>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user ?? null);
+      setUserId(data.user?.id ?? null);
+    });
   }, []);
 
   const profileQ = useQuery({
