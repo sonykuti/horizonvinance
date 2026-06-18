@@ -22,7 +22,7 @@ export function Navbar() {
           </div>
           <div className="leading-tight">
             <div className="font-serif text-lg font-semibold text-primary">Horizon Bank</div>
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Est. 2019 · Europe</div>
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">EST. 2019 · USA & EUROPE</div>
           </div>
         </Link>
 
