@@ -39,8 +39,8 @@ type Withdrawal = {
   created_at: string;
 };
 
-function eur(n: number) {
-  return new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" }).format(n);
+function usd(n: number) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
 }
 
 function Dashboard() {
