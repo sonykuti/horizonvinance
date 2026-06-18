@@ -165,7 +165,7 @@ function Dashboard() {
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2 rounded-2xl bg-primary p-8 text-primary-foreground">
             <div className="flex items-center justify-between text-xs uppercase tracking-widest text-primary-foreground/70">
-              <span>Available Balance</span><span>EUR</span>
+              <span>Available Balance</span><span>USD</span>
             </div>
             <div className="mt-3 font-serif text-5xl">{profile ? eur(Number(profile.balance)) : "—"}</div>
             <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-primary-foreground/80">
