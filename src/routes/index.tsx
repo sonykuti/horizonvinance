@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Horizon Bank — Modern European Banking for Real Life" },
-      { name: "description", content: "Horizon Bank is a European bank founded in 2019 serving students, parents and young professionals with grants, loans and instant transfers." },
-      { property: "og:title", content: "Horizon Bank — Modern European Banking" },
-      { property: "og:description", content: "Open an account in minutes. Grants and loans built for the next generation of Europeans." },
+      { title: "Horizon Bank — Modern American Banking for Real Life" },
+      { name: "description", content: "Horizon Bank is an American bank founded in 2002 serving students, parents and young professionals with grants, loans and instant transfers." },
+      { property: "og:title", content: "Horizon Bank — Modern American Banking" },
+      { property: "og:description", content: "Open an account in minutes. Grants and loans built for the next generation of Americans." },
     ],
   }),
   component: HomePage,
@@ -30,13 +30,13 @@ function HomePage() {
         <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-24 md:grid-cols-2 md:py-32">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-medium text-gold">
-              <Sparkles className="h-3 w-3" /> Founded 2019 · Trusted across the EU
+              <Sparkles className="h-3 w-3" /> Founded 2002 · Trusted across the USA
             </div>
             <h1 className="mt-6 font-serif text-5xl font-semibold leading-[1.05] md:text-6xl">
               Banking that moves with <span className="text-gold">your generation.</span>
             </h1>
             <p className="mt-6 max-w-lg text-lg text-primary-foreground/75">
-              Open a Horizon account in minutes. Track balances, send instant transfers and apply for student or family loans — all in one elegant European bank.
+              Open a Horizon account in minutes. Track balances, send instant transfers and apply for student or family loans — all in one elegant American bank.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link to="/auth" search={{ mode: "signup" }}>
@@ -51,9 +51,9 @@ function HomePage() {
               </Link>
             </div>
             <div className="mt-10 flex items-center gap-6 text-sm text-primary-foreground/70">
-              <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-gold" /> ECB regulated</div>
+              <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-gold" /> FDIC insured</div>
               <div className="flex items-center gap-2"><Lock className="h-4 w-4 text-gold" /> 256-bit encryption</div>
-              <div className="flex items-center gap-2"><Globe2 className="h-4 w-4 text-gold" /> 27 EU countries</div>
+              <div className="flex items-center gap-2"><Globe2 className="h-4 w-4 text-gold" /> All 50 states</div>
             </div>
           </div>
 
@@ -62,16 +62,16 @@ function HomePage() {
             <div className="relative rounded-2xl border border-primary-foreground/10 bg-card p-6 text-card-foreground shadow-2xl">
               <div className="flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground">
                 <span>Horizon · Personal</span>
-                <span>EUR</span>
+                <span>USD</span>
               </div>
-              <div className="mt-2 font-serif text-4xl text-primary">€ 12,480.55</div>
+              <div className="mt-2 font-serif text-4xl text-primary">$ 12,480.55</div>
               <div className="text-xs text-muted-foreground">Available balance</div>
 
               <div className="mt-6 space-y-3">
                 {[
-                  { label: "Salary — Lyon Studios", amt: "+€ 3,200.00", tag: "Today" },
-                  { label: "Rent — March", amt: "-€ 980.00", tag: "Yesterday" },
-                  { label: "Erasmus Grant", amt: "+€ 1,500.00", tag: "Mar 03" },
+                  { label: "Salary — Brooklyn Studios", amt: "+$ 3,200.00", tag: "Today" },
+                  { label: "Rent — March", amt: "-$ 980.00", tag: "Yesterday" },
+                  { label: "Tuition Grant", amt: "+$ 1,500.00", tag: "Mar 03" },
                 ].map((t) => (
                   <div key={t.label} className="flex items-center justify-between rounded-lg border border-border bg-background/50 px-3 py-2 text-sm">
                     <div>
@@ -92,8 +92,8 @@ function HomePage() {
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-12 md:grid-cols-4">
           {[
             { n: "420k+", l: "Active customers" },
-            { n: "€ 2.1B", l: "Loans issued" },
-            { n: "27", l: "EU countries" },
+            { n: "$ 2.1B", l: "Loans issued" },
+            { n: "50", l: "US states" },
             { n: "4.8/5", l: "App store rating" },
           ].map((s) => (
             <div key={s.l}>
@@ -107,7 +107,7 @@ function HomePage() {
       {/* Built for */}
       <section className="mx-auto max-w-7xl px-6 py-24">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-serif text-4xl text-primary">Built for the people who build Europe.</h2>
+          <h2 className="font-serif text-4xl text-primary">Built for the people who build America.</h2>
           <p className="mt-4 text-muted-foreground">Whether you're starting university, raising a family or chasing a first career — Horizon is your financial home.</p>
         </div>
 
@@ -137,7 +137,7 @@ function HomePage() {
           <div className="grid items-center gap-8 md:grid-cols-2">
             <div>
               <h2 className="font-serif text-4xl">Open your Horizon account today.</h2>
-              <p className="mt-3 max-w-md text-primary-foreground/75">A unique account UID, instant euro IBAN and your first €50,000 of practice balance — ready in under 60 seconds.</p>
+              <p className="mt-3 max-w-md text-primary-foreground/75">A unique account UID, instant US routing number and your first $50,000 of practice balance — ready in under 60 seconds.</p>
             </div>
             <div className="flex flex-wrap gap-3 md:justify-end">
               <Link to="/auth" search={{ mode: "signup" }}>

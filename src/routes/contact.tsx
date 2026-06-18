@@ -13,7 +13,7 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Horizon Bank" },
-      { name: "description", content: "Get in touch with Horizon Bank advisors across Europe. Reach us by phone, email, or visit our Brussels headquarters." },
+      { name: "description", content: "Get in touch with Horizon Bank advisors across the USA. Reach us by phone, email, or visit our New York headquarters." },
       { property: "og:title", content: "Contact — Horizon Bank" },
       { property: "og:description", content: "Talk to a Horizon Bank advisor about accounts, loans and grants." },
     ],
@@ -40,7 +40,7 @@ function ContactPage() {
 
       <section className="border-b border-border bg-primary text-primary-foreground">
         <div className="mx-auto max-w-7xl px-6 py-20">
-          <h1 className="font-serif text-5xl">We're here, across Europe.</h1>
+          <h1 className="font-serif text-5xl">We're here, across the USA.</h1>
           <p className="mt-4 max-w-xl text-primary-foreground/75">
             Whether you'd like to open an account, ask about a loan, or speak to a grant officer — our team responds within one business day.
           </p>
@@ -51,19 +51,19 @@ function ContactPage() {
         <div className="space-y-6">
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-3 text-primary"><MapPin className="h-5 w-5 text-gold" /><span className="font-medium">Headquarters</span></div>
-            <p className="mt-3 text-sm text-muted-foreground">Rue de la Finance 27<br />1000 Brussels, Belgium</p>
+            <p className="mt-3 text-sm text-muted-foreground">270 Park Avenue<br />New York, NY 10017, USA</p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-3 text-primary"><Phone className="h-5 w-5 text-gold" /><span className="font-medium">Phone</span></div>
-            <p className="mt-3 text-sm text-muted-foreground">+32 (0)2 555 0199<br />Free from any EU mobile</p>
+            <p className="mt-3 text-sm text-muted-foreground">+1 (212) 555-0199<br />Toll-free from any US line</p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-3 text-primary"><Mail className="h-5 w-5 text-gold" /><span className="font-medium">Email</span></div>
-            <p className="mt-3 text-sm text-muted-foreground">care@horizon-bank.eu<br />loans@horizon-bank.eu</p>
+            <p className="mt-3 text-sm text-muted-foreground">care@horizon-bank.us<br />loans@horizon-bank.us</p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-3 text-primary"><Clock className="h-5 w-5 text-gold" /><span className="font-medium">Hours</span></div>
-            <p className="mt-3 text-sm text-muted-foreground">Mon – Fri · 08:00 – 20:00 CET<br />Sat · 10:00 – 16:00 CET</p>
+            <p className="mt-3 text-sm text-muted-foreground">Mon – Fri · 08:00 – 20:00 EST<br />Sat · 10:00 – 16:00 EST</p>
           </div>
         </div>
 

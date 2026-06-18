@@ -8,24 +8,24 @@ export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
       { title: "Grants & Loans — Horizon Bank" },
-      { name: "description", content: "Student loans, family grants, mortgages and career-start financing from Horizon Bank. Built for young Europeans." },
+      { name: "description", content: "Student loans, family grants, mortgages and career-start financing from Horizon Bank. Built for young Americans." },
       { property: "og:title", content: "Grants & Loans — Horizon Bank" },
-      { property: "og:description", content: "Flexible European loans and grants designed for students, parents and young professionals." },
+      { property: "og:description", content: "Flexible American loans and grants designed for students, parents and young professionals." },
     ],
   }),
   component: ServicesPage,
 });
 
 const loans = [
-  { icon: GraduationCap, title: "Student Loan", rate: "from 1.9% APR", body: "Cover tuition, accommodation and Erasmus exchanges. No repayments until graduation.", amount: "Up to € 50,000" },
-  { icon: Briefcase, title: "Career-Start Loan", rate: "from 3.4% APR", body: "Relocate, upskill or fund your first apartment. Personal loans for under-35s.", amount: "Up to € 25,000" },
-  { icon: Home, title: "Family Mortgage", rate: "from 2.8% APR", body: "Buy your first home with flexible 30-year terms and parent co-guarantee options.", amount: "Up to € 750,000" },
+  { icon: GraduationCap, title: "Student Loan", rate: "from 1.9% APR", body: "Cover tuition, housing and study-abroad programs. No repayments until graduation.", amount: "Up to $ 50,000" },
+  { icon: Briefcase, title: "Career-Start Loan", rate: "from 3.4% APR", body: "Relocate, upskill or fund your first apartment. Personal loans for under-35s.", amount: "Up to $ 25,000" },
+  { icon: Home, title: "Family Mortgage", rate: "from 2.8% APR", body: "Buy your first home with flexible 30-year terms and parent co-guarantee options.", amount: "Up to $ 750,000" },
 ];
 
 const grants = [
-  { icon: Baby, title: "Family Welcome Grant", value: "€ 1,500", body: "One-off grant for new parents opening a Horizon family account." },
-  { icon: GraduationCap, title: "Erasmus Mobility Grant", value: "€ 1,200", body: "Supports EU students studying abroad for a full semester." },
-  { icon: HandCoins, title: "First-Job Grant", value: "€ 800", body: "Bonus for young professionals receiving their first salary into Horizon." },
+  { icon: Baby, title: "Family Welcome Grant", value: "$ 1,500", body: "One-off grant for new parents opening a Horizon family account." },
+  { icon: GraduationCap, title: "Study Abroad Grant", value: "$ 1,200", body: "Supports US students studying abroad for a full semester." },
+  { icon: HandCoins, title: "First-Job Grant", value: "$ 800", body: "Bonus for young professionals receiving their first salary into Horizon." },
 ];
 
 function ServicesPage() {
@@ -40,7 +40,7 @@ function ServicesPage() {
           </div>
           <h1 className="mt-6 font-serif text-5xl">Financing the next chapter of your life.</h1>
           <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/75">
-            Horizon Bank offers transparent rates, EU-wide eligibility and a fully digital application — approved in 24 hours.
+            Horizon Bank offers transparent rates, nationwide eligibility and a fully digital application — approved in 24 hours.
           </p>
         </div>
       </section>
