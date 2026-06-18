@@ -19,8 +19,10 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background">
+      <BankingBackdrop />
       <Navbar />
+
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-primary text-primary-foreground">
