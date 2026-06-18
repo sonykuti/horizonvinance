@@ -24,6 +24,7 @@ function AuthPage() {
   const { user } = useAuth();
   const [isSignup, setIsSignup] = useState(mode === "signup");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (user) navigate({ to: "/dashboard" });
