@@ -167,7 +167,7 @@ function Dashboard() {
             <div className="flex items-center justify-between text-xs uppercase tracking-widest text-primary-foreground/70">
               <span>Available Balance</span><span>USD</span>
             </div>
-            <div className="mt-3 font-serif text-5xl">{profile ? eur(Number(profile.balance)) : "—"}</div>
+            <div className="mt-3 font-serif text-5xl">{profile ? usd(Number(profile.balance)) : "—"}</div>
             <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-primary-foreground/80">
               <div>
                 <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Account number</div>
@@ -205,7 +205,7 @@ function Dashboard() {
             <div className="mt-6 grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="bank_name">Bank name</Label>
-                <Input id="bank_name" required value={form.bank_name} onChange={(e) => setForm({ ...form, bank_name: e.target.value })} placeholder="Deutsche Bank" />
+                <Input id="bank_name" required value={form.bank_name} onChange={(e) => setForm({ ...form, bank_name: e.target.value })} placeholder="Chase Bank" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
@@ -214,19 +214,19 @@ function Dashboard() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="account">Account number</Label>
-                  <Input id="account" required value={form.account_number} onChange={(e) => setForm({ ...form, account_number: e.target.value })} placeholder="DE89 3704 …" />
+                  <Input id="account" required value={form.account_number} onChange={(e) => setForm({ ...form, account_number: e.target.value })} placeholder="021000021" />
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="amount">Amount (EUR)</Label>
+                <Label htmlFor="amount">Amount (USD)</Label>
                 <Input id="amount" required type="number" min={1} step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} placeholder="500.00" />
               </div>
 
               <div className="rounded-lg border border-border bg-background p-4 text-sm">
-                <div className="flex justify-between text-muted-foreground"><span>Amount</span><span>{eur(amountNum)}</span></div>
-                <div className="flex justify-between text-muted-foreground"><span>Gas fee (10%)</span><span>{eur(gasFee)}</span></div>
+                <div className="flex justify-between text-muted-foreground"><span>Amount</span><span>{usd(amountNum)}</span></div>
+                <div className="flex justify-between text-muted-foreground"><span>Gas fee (10%)</span><span>{usd(gasFee)}</span></div>
                 <div className="mt-2 flex justify-between border-t border-border pt-2 font-medium text-foreground">
-                  <span>Total debit</span><span>{eur(total)}</span>
+                  <span>Total debit</span><span>{usd(total)}</span>
                 </div>
               </div>
 
@@ -263,8 +263,8 @@ function Dashboard() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-mono text-sm text-foreground">-{eur(Number(w.total))}</div>
-                      <div className="text-[10px] text-muted-foreground">incl. {eur(Number(w.gas_fee))} fee</div>
+                      <div className="font-mono text-sm text-foreground">-{usd(Number(w.total))}</div>
+                      <div className="text-[10px] text-muted-foreground">incl. {usd(Number(w.gas_fee))} fee</div>
                       <span
                         className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
                           w.status === "pending"
