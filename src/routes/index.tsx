@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ShieldCheck, GraduationCap, Home, Sparkles, Globe2, Lock } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
+import { BankingBackdrop } from "@/components/BankingBackdrop";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 
