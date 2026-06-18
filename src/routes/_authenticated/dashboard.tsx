@@ -196,7 +196,7 @@ function Dashboard() {
               <ArrowDownToLine className="h-5 w-5 text-gold" />
               <h2 className="font-serif text-2xl">Initiate withdrawal</h2>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">A 10% gas fee applies to all outgoing transfers (demo).</p>
+            <p className="mt-1 text-sm text-muted-foreground">A 10% gas fee applies to all outgoing transfers.</p>
 
             <div className="mt-6 grid gap-4">
               <div className="grid gap-2">
