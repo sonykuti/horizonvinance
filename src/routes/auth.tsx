@@ -78,12 +78,12 @@ function AuthPage() {
           </div>
           <div>
             <div className="font-serif text-xl">Horizon Bank</div>
-            <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2019</div>
+            <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2002</div>
           </div>
         </Link>
         <div>
-          <h2 className="font-serif text-4xl leading-tight">"Horizon got me my Erasmus grant in 5 days — and a real EU IBAN."</h2>
-          <p className="mt-4 text-sm text-primary-foreground/70">— Sofia, student in Bologna</p>
+          <h2 className="font-serif text-4xl leading-tight">"Horizon approved my student loan in 5 days — and gave me a real US routing number."</h2>
+          <p className="mt-4 text-sm text-primary-foreground/70">— Sofia, student in Boston</p>
         </div>
         <div className="text-xs text-primary-foreground/50">© {new Date().getFullYear()} Horizon Bank SA</div>
       </div>
@@ -99,7 +99,7 @@ function AuthPage() {
 
           <h1 className="font-serif text-3xl text-primary">{isSignup ? "Open your account" : "Welcome back"}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {isSignup ? "Get a unique UID and €50,000 of practice balance to explore." : "Sign in to your Horizon dashboard."}
+            {isSignup ? "Get a unique UID and $50,000 of practice balance to explore." : "Sign in to your Horizon dashboard."}
           </p>
 
           <Button type="button" variant="outline" className="mt-6 w-full" onClick={googleSignIn}>

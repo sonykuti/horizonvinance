@@ -34,7 +34,7 @@ export function BankingBackdrop() {
           <span className="flex items-center gap-1"><LineChart className="h-3 w-3" /> Portfolio</span>
           <span>30d</span>
         </div>
-        <div className="mt-2 font-serif text-2xl text-[oklch(0.25_0.08_265)]">€ 84,210</div>
+        <div className="mt-2 font-serif text-2xl text-[oklch(0.25_0.08_265)]">$ 84,210</div>
         <div className="mt-1 flex items-center gap-1 text-[10px] text-emerald-600">
           <TrendingUp className="h-3 w-3" /> +4.82% this month
         </div>
@@ -80,8 +80,8 @@ export function BankingBackdrop() {
           <ArrowUpRight className="h-4 w-4" />
         </div>
         <div>
-          <div className="font-medium text-[oklch(0.25_0.08_265)]">Transfer · SEPA</div>
-          <div className="text-[10px] text-[oklch(0.45_0.04_265)]">+€ 2,400.00 · Verified</div>
+          <div className="font-medium text-[oklch(0.25_0.08_265)]">Transfer · ACH</div>
+          <div className="text-[10px] text-[oklch(0.45_0.04_265)]">+$ 2,400.00 · Verified</div>
         </div>
       </div>
 

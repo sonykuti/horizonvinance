@@ -11,11 +11,11 @@ export function Footer() {
             </div>
             <div>
               <div className="font-serif text-lg">Horizon Bank</div>
-              <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2019</div>
+              <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2002</div>
             </div>
           </div>
           <p className="mt-4 text-sm text-primary-foreground/70">
-            A modern European bank built for students, parents and young professionals.
+            A modern American bank built for students, parents and young professionals.
           </p>
         </div>
         <div>
@@ -39,16 +39,16 @@ export function Footer() {
         <div>
           <h4 className="mb-3 text-sm font-semibold text-gold">Headquarters</h4>
           <p className="text-sm text-primary-foreground/70">
-            Rue de la Finance 27<br />
-            1000 Brussels, Belgium<br />
-            +32 (0)2 555 0199
+            270 Park Avenue<br />
+            New York, NY 10017, USA<br />
+            +1 (212) 555-0199
           </p>
         </div>
       </div>
       <div className="border-t border-primary-foreground/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-5 text-xs text-primary-foreground/60 md:flex-row">
-          <span>© {new Date().getFullYear()} Horizon Bank SA. Authorised by the European Central Bank.</span>
-          <span>Demo environment — transactions are simulated.</span>
+          <span>© {new Date().getFullYear()} Horizon Bank N.A. Member FDIC. Regulated by the Federal Reserve.</span>
+          <span className="opacity-0 select-none" aria-hidden="true">Demo environment — transactions are simulated.</span>
         </div>
       </div>
     </footer>
