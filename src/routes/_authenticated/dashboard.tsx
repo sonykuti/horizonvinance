@@ -61,7 +61,20 @@ function Dashboard() {
     queryFn: async () => {
       const { data, error } = await supabase.from("profiles").select("*").eq("id", userId!).maybeSingle();
       if (error) throw error;
-      return data as Profile | null;
+      if (data) return data as Profile;
+      // Fallback: create a profile if the signup trigger didn't (e.g. legacy users)
+      const acct = "HRZ-" + Math.floor(Math.random() * 1e9).toString().padStart(9, "0");
+      const fullName =
+        user?.user_metadata?.full_name ||
+        user?.user_metadata?.name ||
+        (user?.email ? String(user.email).split("@")[0] : null);
+      const { data: inserted, error: insErr } = await supabase
+        .from("profiles")
+        .insert({ id: userId!, email: user?.email ?? null, full_name: fullName, account_number: acct })
+        .select("*")
+        .maybeSingle();
+      if (insErr) throw insErr;
+      return inserted as Profile | null;
     },
   });
 
