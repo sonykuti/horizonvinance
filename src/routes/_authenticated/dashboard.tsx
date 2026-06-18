@@ -145,7 +145,7 @@ function Dashboard() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-serif text-3xl text-primary">
-              Welcome back{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}.
+              Welcome back{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : user?.user_metadata?.full_name ? `, ${String(user.user_metadata.full_name).split(" ")[0]}` : ""}.
             </h1>
             <p className="text-sm text-muted-foreground">Your Horizon Bank dashboard.</p>
           </div>
