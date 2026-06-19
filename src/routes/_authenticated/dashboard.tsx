@@ -222,7 +222,16 @@ function Dashboard() {
             <div className="mt-6 grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="bank_name">Bank name</Label>
-                <Input id="bank_name" required value={form.bank_name} onChange={(e) => setForm({ ...form, bank_name: e.target.value })} placeholder="Chase Bank" />
+                <Select value={form.bank_name} onValueChange={(v) => setForm({ ...form, bank_name: v })} required>
+                  <SelectTrigger id="bank_name">
+                    <SelectValue placeholder="Select a bank" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {US_BANKS.map((b) => (
+                      <SelectItem key={b} value={b}>{b}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
