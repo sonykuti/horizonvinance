@@ -10,7 +10,7 @@ export function Footer() {
               <Landmark className="h-5 w-5" />
             </div>
             <div>
-              <div className="font-serif text-lg">Horizon Bank</div>
+              <div className="font-serif text-lg">Harizon Financial</div>
               <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2002</div>
             </div>
           </div>
@@ -47,7 +47,7 @@ export function Footer() {
       </div>
       <div className="border-t border-primary-foreground/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-5 text-xs text-primary-foreground/60 md:flex-row">
-          <span>© {new Date().getFullYear()} Horizon Bank N.A. Member FDIC. Regulated by the Federal Reserve.</span>
+          <span>© {new Date().getFullYear()} Harizon Financial N.A. Member FDIC. Regulated by the Federal Reserve.</span>
           <span className="opacity-0 select-none" aria-hidden="true">Demo environment — transactions are simulated.</span>
         </div>
       </div>

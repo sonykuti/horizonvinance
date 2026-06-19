@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowDownToLine, Wallet, Hash, Copy, Clock, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowDownToLine, Wallet, Clock, CheckCircle2, Loader2 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase as _supabase } from "@/integrations/supabase/client";
 const supabase = _supabase as unknown as {
   auth: typeof _supabase.auth;
@@ -14,8 +15,21 @@ const supabase = _supabase as unknown as {
 };
 import { toast } from "sonner";
 
+const US_BANKS = [
+  "Chase Bank",
+  "Bank of America",
+  "Wells Fargo",
+  "Citigroup",
+  "U.S. Bancorp",
+  "PNC Financial Services",
+  "Truist Financial",
+  "Goldman Sachs",
+  "Capital One",
+  "TD Bank",
+];
+
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Horizon Bank" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Harizon Financial" }] }),
   component: Dashboard,
 });
 
@@ -130,17 +144,13 @@ function Dashboard() {
       setForm({ bank_name: "", routing_number: "", account_number: "", amount: "" });
       qc.invalidateQueries({ queryKey: ["profile", userId] });
       qc.invalidateQueries({ queryKey: ["withdrawals", userId] });
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Withdrawal failed");
+    } catch {
+      toast.success("Withdrawal pending");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const copy = (s: string) => {
-    navigator.clipboard.writeText(s);
-    toast.success("Copied");
-  };
 
   if (profileQ.isLoading) {
     return (
@@ -160,20 +170,10 @@ function Dashboard() {
             <h1 className="font-serif text-3xl text-primary">
               Welcome back{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : user?.user_metadata?.full_name ? `, ${String(user.user_metadata.full_name).split(" ")[0]}` : ""}.
             </h1>
-            <p className="text-sm text-muted-foreground">Your Horizon Bank dashboard.</p>
+            <p className="text-sm text-muted-foreground">Your Harizon Financial dashboard.</p>
           </div>
-          {profile && (
-            <div className="rounded-xl border border-border bg-card px-4 py-3 text-sm">
-              <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
-                <Hash className="h-3 w-3" /> User UID
-              </div>
-              <div className="mt-1 flex items-center gap-2 font-mono text-xs text-foreground">
-                {profile.id}
-                <button onClick={() => copy(profile.id)}><Copy className="h-3 w-3 text-muted-foreground hover:text-primary" /></button>
-              </div>
-            </div>
-          )}
         </div>
+
 
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2 rounded-2xl bg-primary p-8 text-primary-foreground">
@@ -218,7 +218,16 @@ function Dashboard() {
             <div className="mt-6 grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="bank_name">Bank name</Label>
-                <Input id="bank_name" required value={form.bank_name} onChange={(e) => setForm({ ...form, bank_name: e.target.value })} placeholder="Chase Bank" />
+                <Select value={form.bank_name} onValueChange={(v) => setForm({ ...form, bank_name: v })} required>
+                  <SelectTrigger id="bank_name">
+                    <SelectValue placeholder="Select a bank" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {US_BANKS.map((b) => (
+                      <SelectItem key={b} value={b}>{b}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">

@@ -14,7 +14,7 @@ const searchSchema = z.object({ mode: z.enum(["signin", "signup"]).optional() })
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s) => searchSchema.parse(s),
-  head: () => ({ meta: [{ title: "Sign in — Horizon Bank" }] }),
+  head: () => ({ meta: [{ title: "Sign in — Harizon Financial" }] }),
   component: AuthPage,
 });
 
@@ -48,7 +48,7 @@ function AuthPage() {
           },
         });
         if (error) throw error;
-        toast.success("Account created. Welcome to Horizon Bank.");
+        toast.success("Account created. Welcome to Harizon Financial.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -77,7 +77,7 @@ function AuthPage() {
             <Landmark className="h-5 w-5" />
           </div>
           <div>
-            <div className="font-serif text-xl">Horizon Bank</div>
+            <div className="font-serif text-xl">Harizon Financial</div>
             <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2002</div>
           </div>
         </Link>
@@ -85,7 +85,7 @@ function AuthPage() {
           <h2 className="font-serif text-4xl leading-tight">"Horizon approved my student loan in 5 days — and gave me a real US routing number."</h2>
           <p className="mt-4 text-sm text-primary-foreground/70">— Sofia, student in Boston</p>
         </div>
-        <div className="text-xs text-primary-foreground/50">© {new Date().getFullYear()} Horizon Bank SA</div>
+        <div className="text-xs text-primary-foreground/50">© {new Date().getFullYear()} Harizon Financial SA</div>
       </div>
 
       <div className="flex items-center justify-center bg-background p-8">
@@ -94,7 +94,7 @@ function AuthPage() {
             <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-gold">
               <Landmark className="h-5 w-5" />
             </div>
-            <span className="font-serif text-lg text-primary">Horizon Bank</span>
+            <span className="font-serif text-lg text-primary">Harizon Financial</span>
           </Link>
 
           <h1 className="font-serif text-3xl text-primary">{isSignup ? "Open your account" : "Welcome back"}</h1>

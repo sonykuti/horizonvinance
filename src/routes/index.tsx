@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Horizon Bank — Modern American Banking for Real Life" },
-      { name: "description", content: "Horizon Bank is an American bank founded in 2002 serving students, parents and young professionals with grants, loans and instant transfers." },
-      { property: "og:title", content: "Horizon Bank — Modern American Banking" },
+      { title: "Harizon Financial — Modern American Banking for Real Life" },
+      { name: "description", content: "Harizon Financial is an American bank founded in 2002 serving students, parents and young professionals with grants, loans and instant transfers." },
+      { property: "og:title", content: "Harizon Financial — Modern American Banking" },
       { property: "og:description", content: "Open an account in minutes. Grants and loans built for the next generation of Americans." },
     ],
   }),

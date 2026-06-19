@@ -45,7 +45,7 @@
 
 :root {
   --radius: 0.625rem;
-  /* Horizon Bank palette — deep navy + gold */
+  /* Harizon Financial palette — deep navy + gold */
   --background: oklch(0.985 0.005 250);
   --foreground: oklch(0.18 0.05 260);
   --card: oklch(1 0 0);
@@ -129,4 +129,13 @@
     font-family: var(--font-serif);
     letter-spacing: -0.02em;
   }
+}
+
+/* Globally hide the Lovable badge */
+#lovable-badge,
+[id="lovable-badge"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
