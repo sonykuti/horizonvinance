@@ -39,6 +39,7 @@ type Profile = {
   email: string | null;
   account_number: string;
   balance: number;
+  created_at?: string | null;
 };
 
 type Withdrawal = {
@@ -191,8 +192,10 @@ function Dashboard() {
             </div>
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between"><dt className="text-muted-foreground">Withdrawals</dt><dd>{withdrawals.length}</dd></div>
+              <div className="flex justify-between"><dt className="text-muted-foreground">Successful</dt><dd>{withdrawals.filter((w) => w.status === "successful" || w.status === "completed").length}</dd></div>
               <div className="flex justify-between"><dt className="text-muted-foreground">Pending</dt><dd>{withdrawals.filter((w) => w.status === "pending").length}</dd></div>
-              <div className="flex justify-between"><dt className="text-muted-foreground">Member since</dt><dd>2026</dd></div>
+              <div className="flex justify-between"><dt className="text-muted-foreground">Failed</dt><dd>{withdrawals.filter((w) => w.status === "failed").length}</dd></div>
+              <div className="flex justify-between"><dt className="text-muted-foreground">Member since</dt><dd>{profile?.created_at ? new Date(profile.created_at).getFullYear() : new Date().getFullYear()}</dd></div>
             </dl>
           </div>
         </div>
