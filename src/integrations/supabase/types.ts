@@ -116,6 +116,32 @@ export type Database = {
         }
         Returns: boolean
       }
+      process_withdrawal: {
+        Args: {
+          p_account_number: string
+          p_amount: number
+          p_bank_name: string
+          p_routing_number: string
+        }
+        Returns: {
+          account_number: string
+          amount: number
+          bank_name: string
+          created_at: string
+          gas_fee: number
+          id: string
+          routing_number: string
+          status: string
+          total: number
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "withdrawals"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       app_role: "admin" | "user"

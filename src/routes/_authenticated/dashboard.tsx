@@ -123,24 +123,15 @@ function Dashboard() {
 
     setSubmitting(true);
     try {
-      const { error: insertErr } = await supabase.from("withdrawals").insert({
-        user_id: userId,
-        bank_name: form.bank_name,
-        routing_number: form.routing_number,
-        account_number: form.account_number,
-        amount: amountNum,
-        gas_fee: gasFee,
-        total,
+      const { error } = await (supabase as any).rpc("process_withdrawal", {
+        p_bank_name: form.bank_name,
+        p_routing_number: form.routing_number,
+        p_account_number: form.account_number,
+        p_amount: amountNum,
       });
-      if (insertErr) throw insertErr;
+      if (error) throw error;
 
-      const { error: updErr } = await supabase
-        .from("profiles")
-        .update({ balance: +(profile.balance - total).toFixed(2) })
-        .eq("id", userId);
-      if (updErr) throw updErr;
-
-      toast.success("Withdrawal submitted — pending review");
+      toast.success("Withdrawal pending");
       setForm({ bank_name: "", routing_number: "", account_number: "", amount: "" });
       qc.invalidateQueries({ queryKey: ["profile", userId] });
       qc.invalidateQueries({ queryKey: ["withdrawals", userId] });
