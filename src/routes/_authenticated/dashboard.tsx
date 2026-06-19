@@ -39,6 +39,7 @@ type Profile = {
   email: string | null;
   account_number: string;
   balance: number;
+  created_at?: string | null;
 };
 
 type Withdrawal = {
