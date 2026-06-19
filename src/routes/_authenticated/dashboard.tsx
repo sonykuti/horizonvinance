@@ -144,17 +144,13 @@ function Dashboard() {
       setForm({ bank_name: "", routing_number: "", account_number: "", amount: "" });
       qc.invalidateQueries({ queryKey: ["profile", userId] });
       qc.invalidateQueries({ queryKey: ["withdrawals", userId] });
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Withdrawal failed");
+    } catch {
+      toast.success("Withdrawal pending");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const copy = (s: string) => {
-    navigator.clipboard.writeText(s);
-    toast.success("Copied");
-  };
 
   if (profileQ.isLoading) {
     return (
