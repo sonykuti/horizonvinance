@@ -1,18 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowDownToLine, Wallet, Hash, Copy, Clock, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowDownToLine, Wallet, Clock, CheckCircle2, Loader2 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase as _supabase } from "@/integrations/supabase/client";
 const supabase = _supabase as unknown as {
   auth: typeof _supabase.auth;
   from: (table: string) => any;
 };
 import { toast } from "sonner";
+
+const US_BANKS = [
+  "Chase Bank",
+  "Bank of America",
+  "Wells Fargo",
+  "Citigroup",
+  "U.S. Bancorp",
+  "PNC Financial Services",
+  "Truist Financial",
+  "Goldman Sachs",
+  "Capital One",
+  "TD Bank",
+];
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Harizon Financial" }] }),
