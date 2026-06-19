@@ -176,18 +176,8 @@ function Dashboard() {
             </h1>
             <p className="text-sm text-muted-foreground">Your Harizon Financial dashboard.</p>
           </div>
-          {profile && (
-            <div className="rounded-xl border border-border bg-card px-4 py-3 text-sm">
-              <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
-                <Hash className="h-3 w-3" /> User UID
-              </div>
-              <div className="mt-1 flex items-center gap-2 font-mono text-xs text-foreground">
-                {profile.id}
-                <button onClick={() => copy(profile.id)}><Copy className="h-3 w-3 text-muted-foreground hover:text-primary" /></button>
-              </div>
-            </div>
-          )}
         </div>
+
 
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           <div className="md:col-span-2 rounded-2xl bg-primary p-8 text-primary-foreground">
