@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Grants & Loans — Horizon Bank" },
-      { name: "description", content: "Student loans, family grants, mortgages and career-start financing from Horizon Bank. Built for young Americans." },
-      { property: "og:title", content: "Grants & Loans — Horizon Bank" },
+      { title: "Grants & Loans — Harizon Financial" },
+      { name: "description", content: "Student loans, family grants, mortgages and career-start financing from Harizon Financial. Built for young Americans." },
+      { property: "og:title", content: "Grants & Loans — Harizon Financial" },
       { property: "og:description", content: "Flexible American loans and grants designed for students, parents and young professionals." },
     ],
   }),
@@ -40,7 +40,7 @@ function ServicesPage() {
           </div>
           <h1 className="mt-6 font-serif text-5xl">Financing the next chapter of your life.</h1>
           <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/75">
-            Horizon Bank offers transparent rates, nationwide eligibility and a fully digital application — approved in 24 hours.
+            Harizon Financial offers transparent rates, nationwide eligibility and a fully digital application — approved in 24 hours.
           </p>
         </div>
       </section>

@@ -15,7 +15,7 @@ const supabase = _supabase as unknown as {
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Horizon Bank" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Harizon Financial" }] }),
   component: Dashboard,
 });
 
@@ -160,7 +160,7 @@ function Dashboard() {
             <h1 className="font-serif text-3xl text-primary">
               Welcome back{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : user?.user_metadata?.full_name ? `, ${String(user.user_metadata.full_name).split(" ")[0]}` : ""}.
             </h1>
-            <p className="text-sm text-muted-foreground">Your Horizon Bank dashboard.</p>
+            <p className="text-sm text-muted-foreground">Your Harizon Financial dashboard.</p>
           </div>
           {profile && (
             <div className="rounded-xl border border-border bg-card px-4 py-3 text-sm">

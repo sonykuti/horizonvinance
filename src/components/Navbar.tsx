@@ -21,7 +21,7 @@ export function Navbar() {
             <Landmark className="h-5 w-5" />
           </div>
           <div className="leading-tight">
-            <div className="font-serif text-lg font-semibold text-primary">Horizon Bank</div>
+            <div className="font-serif text-lg font-semibold text-primary">Harizon Financial</div>
             <div className="text-[10px] uppercase tracking-widest text-muted-foreground">EST. 2002 · USA</div>
           </div>
         </Link>

@@ -12,10 +12,10 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Horizon Bank" },
-      { name: "description", content: "Get in touch with Horizon Bank advisors across the USA. Reach us by phone, email, or visit our New York headquarters." },
-      { property: "og:title", content: "Contact — Horizon Bank" },
-      { property: "og:description", content: "Talk to a Horizon Bank advisor about accounts, loans and grants." },
+      { title: "Contact — Harizon Financial" },
+      { name: "description", content: "Get in touch with Harizon Financial advisors across the USA. Reach us by phone, email, or visit our New York headquarters." },
+      { property: "og:title", content: "Contact — Harizon Financial" },
+      { property: "og:description", content: "Talk to a Harizon Financial advisor about accounts, loans and grants." },
     ],
   }),
   component: ContactPage,
