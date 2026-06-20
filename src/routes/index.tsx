@@ -89,7 +89,7 @@ function HomePage() {
 
       {/* Stats */}
       <section className="border-y border-border bg-card">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-12 md:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:gap-8 sm:px-6 sm:py-12 md:grid-cols-4">
           {[
             { n: "420k+", l: "Active customers" },
             { n: "$ 2.1B", l: "Loans issued" },
@@ -97,33 +97,33 @@ function HomePage() {
             { n: "4.8/5", l: "App store rating" },
           ].map((s) => (
             <div key={s.l}>
-              <div className="font-serif text-3xl text-primary">{s.n}</div>
-              <div className="mt-1 text-sm text-muted-foreground">{s.l}</div>
+              <div className="font-serif text-2xl text-primary sm:text-3xl">{s.n}</div>
+              <div className="mt-1 text-xs text-muted-foreground sm:text-sm">{s.l}</div>
             </div>
           ))}
         </div>
       </section>
 
       {/* Built for */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 md:py-24">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-serif text-4xl text-primary">Built for the people who build America.</h2>
-          <p className="mt-4 text-muted-foreground">Whether you're starting university, raising a family or chasing a first career — Horizon is your financial home.</p>
+          <h2 className="font-serif text-3xl text-primary sm:text-4xl">Built for the people who build America.</h2>
+          <p className="mt-4 text-sm text-muted-foreground sm:text-base">Whether you're starting university, raising a family or chasing a first career — Horizon is your financial home.</p>
         </div>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 grid gap-5 sm:mt-14 sm:gap-6 md:grid-cols-3">
           {[
             { icon: GraduationCap, title: "Students", body: "Zero-fee accounts, Erasmus support and student loans from 1.9% APR." },
             { icon: Home, title: "Parents", body: "Family grants, child savings plans and mortgages with flexible repayment." },
             { icon: Sparkles, title: "Young Professionals", body: "Salary accounts, career-start loans and rapid cross-border transfers." },
           ].map(({ icon: Icon, title, body }) => (
-            <div key={title} className="group rounded-2xl border border-border bg-card p-8 transition hover:border-gold hover:shadow-lg">
+            <div key={title} className="group rounded-2xl border border-border bg-card p-6 transition hover:border-gold hover:shadow-lg sm:p-8">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-gold">
                 <Icon className="h-6 w-6" />
               </div>
-              <h3 className="mt-6 font-serif text-2xl text-primary">{title}</h3>
+              <h3 className="mt-5 font-serif text-xl text-primary sm:mt-6 sm:text-2xl">{title}</h3>
               <p className="mt-3 text-sm text-muted-foreground">{body}</p>
-              <Link to="/services" className="mt-6 inline-flex items-center text-sm font-medium text-primary group-hover:text-gold">
+              <Link to="/services" className="mt-5 inline-flex items-center text-sm font-medium text-primary group-hover:text-gold sm:mt-6">
                 Learn more <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
@@ -132,24 +132,25 @@ function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-7xl px-6 pb-24">
-        <div className="overflow-hidden rounded-3xl bg-primary p-12 text-primary-foreground md:p-16">
-          <div className="grid items-center gap-8 md:grid-cols-2">
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-24">
+        <div className="overflow-hidden rounded-3xl bg-primary p-8 text-primary-foreground sm:p-12 md:p-16">
+          <div className="grid items-center gap-6 md:grid-cols-2 md:gap-8">
             <div>
-              <h2 className="font-serif text-4xl">Open your Horizon account today.</h2>
-              <p className="mt-3 max-w-md text-primary-foreground/75">A unique account UID, instant US routing number and your first $50,000 of practice balance — ready in under 60 seconds.</p>
+              <h2 className="font-serif text-3xl sm:text-4xl">Open your Horizon account today.</h2>
+              <p className="mt-3 max-w-md text-sm text-primary-foreground/75 sm:text-base">A unique account UID, instant US routing number and your first $50,000 of practice balance — ready in under 60 seconds.</p>
             </div>
-            <div className="flex flex-wrap gap-3 md:justify-end">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap md:justify-end">
               <Link to="/auth" search={{ mode: "signup" }}>
-                <Button size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90">Create account</Button>
+                <Button size="lg" className="w-full bg-gold text-gold-foreground hover:bg-gold/90 sm:w-auto">Create account</Button>
               </Link>
               <Link to="/contact">
-                <Button size="lg" variant="outline" className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10">Talk to an advisor</Button>
+                <Button size="lg" variant="outline" className="w-full border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 sm:w-auto">Talk to an advisor</Button>
               </Link>
             </div>
           </div>
         </div>
       </section>
+
 
       <Footer />
     </div>

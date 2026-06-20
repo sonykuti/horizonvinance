@@ -34,28 +34,28 @@ function ServicesPage() {
       <Navbar />
 
       <section className="border-b border-border bg-primary text-primary-foreground">
-        <div className="mx-auto max-w-7xl px-6 py-20 text-center">
+        <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20">
           <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-medium text-gold">
             <Sparkles className="h-3 w-3" /> Loans & Grants
           </div>
-          <h1 className="mt-6 font-serif text-5xl">Financing the next chapter of your life.</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/75">
+          <h1 className="mt-6 font-serif text-4xl sm:text-5xl">Financing the next chapter of your life.</h1>
+          <p className="mx-auto mt-4 max-w-2xl text-sm text-primary-foreground/75 sm:text-base">
             Harizon Financial offers transparent rates, nationwide eligibility and a fully digital application — approved in 24 hours.
           </p>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <h2 className="font-serif text-3xl text-primary">Loans</h2>
-        <p className="mt-2 text-muted-foreground">Flexible borrowing tailored to your life stage.</p>
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
+        <h2 className="font-serif text-2xl text-primary sm:text-3xl">Loans</h2>
+        <p className="mt-2 text-sm text-muted-foreground sm:text-base">Flexible borrowing tailored to your life stage.</p>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-5 sm:mt-10 sm:gap-6 md:grid-cols-3">
           {loans.map(({ icon: Icon, title, rate, body, amount }) => (
-            <div key={title} className="flex flex-col rounded-2xl border border-border bg-card p-8 transition hover:border-gold">
+            <div key={title} className="flex flex-col rounded-2xl border border-border bg-card p-6 transition hover:border-gold sm:p-8">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-gold">
                 <Icon className="h-6 w-6" />
               </div>
-              <h3 className="mt-6 font-serif text-2xl text-primary">{title}</h3>
+              <h3 className="mt-5 font-serif text-xl text-primary sm:mt-6 sm:text-2xl">{title}</h3>
               <div className="mt-2 text-sm text-gold">{rate}</div>
               <p className="mt-3 flex-1 text-sm text-muted-foreground">{body}</p>
               <div className="mt-6 border-t border-border pt-4 text-sm font-medium text-foreground">{amount}</div>
@@ -68,13 +68,13 @@ function ServicesPage() {
       </section>
 
       <section className="border-t border-border bg-card">
-        <div className="mx-auto max-w-7xl px-6 py-20">
-          <h2 className="font-serif text-3xl text-primary">Grants</h2>
-          <p className="mt-2 text-muted-foreground">Non-repayable support for the moments that matter.</p>
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
+          <h2 className="font-serif text-2xl text-primary sm:text-3xl">Grants</h2>
+          <p className="mt-2 text-sm text-muted-foreground sm:text-base">Non-repayable support for the moments that matter.</p>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="mt-8 grid gap-5 sm:mt-10 sm:gap-6 md:grid-cols-3">
             {grants.map(({ icon: Icon, title, value, body }) => (
-              <div key={title} className="rounded-2xl border border-border bg-background p-8">
+              <div key={title} className="rounded-2xl border border-border bg-background p-6 sm:p-8">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold/15 text-primary">
                     <Icon className="h-5 w-5" />
@@ -93,13 +93,14 @@ function ServicesPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20 text-center">
-        <h2 className="font-serif text-3xl text-primary">Ready to apply?</h2>
-        <p className="mt-3 text-muted-foreground">Create your Horizon account — your unique UID lets you apply for any grant or loan above.</p>
+      <section className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20">
+        <h2 className="font-serif text-2xl text-primary sm:text-3xl">Ready to apply?</h2>
+        <p className="mt-3 text-sm text-muted-foreground sm:text-base">Create your Horizon account — your unique UID lets you apply for any grant or loan above.</p>
         <Link to="/auth" search={{ mode: "signup" }} className="mt-6 inline-block">
-          <Button size="lg" className="bg-gold text-gold-foreground hover:bg-gold/90">Open Free Account</Button>
+          <Button size="lg" className="w-full bg-gold text-gold-foreground hover:bg-gold/90 sm:w-auto">Open Free Account</Button>
         </Link>
       </section>
+
 
       <Footer />
     </div>
