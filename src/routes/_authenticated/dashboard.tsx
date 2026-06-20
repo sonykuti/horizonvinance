@@ -156,10 +156,10 @@ function Dashboard() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="mx-auto max-w-7xl px-6 py-10">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="font-serif text-3xl text-primary">
+          <div className="min-w-0">
+            <h1 className="break-words font-serif text-2xl text-primary sm:text-3xl">
               Welcome back{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : user?.user_metadata?.full_name ? `, ${String(user.user_metadata.full_name).split(" ")[0]}` : ""}.
             </h1>
             <p className="text-sm text-muted-foreground">Your Harizon Financial dashboard.</p>
@@ -167,20 +167,21 @@ function Dashboard() {
         </div>
 
 
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          <div className="md:col-span-2 rounded-2xl bg-primary p-8 text-primary-foreground">
+
+        <div className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 md:grid-cols-3">
+          <div className="md:col-span-2 rounded-2xl bg-primary p-6 text-primary-foreground sm:p-8">
             <div className="flex items-center justify-between text-xs uppercase tracking-widest text-primary-foreground/70">
               <span>Available Balance</span><span>USD</span>
             </div>
-            <div className="mt-3 font-serif text-5xl">{profile ? usd(Number(profile.balance)) : "—"}</div>
-            <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-primary-foreground/80">
-              <div>
+            <div className="mt-3 font-serif text-4xl break-words sm:text-5xl">{profile ? usd(Number(profile.balance)) : "—"}</div>
+            <div className="mt-5 grid grid-cols-1 gap-4 text-sm text-primary-foreground/80 sm:mt-6 sm:grid-cols-2">
+              <div className="min-w-0">
                 <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Account number</div>
-                <div className="font-mono">{profile?.account_number}</div>
+                <div className="truncate font-mono">{profile?.account_number}</div>
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Holder</div>
-                <div>{profile?.full_name ?? profile?.email}</div>
+                <div className="truncate">{profile?.full_name ?? profile?.email}</div>
               </div>
             </div>
           </div>
@@ -200,12 +201,13 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
+
+        <div className="mt-6 grid gap-4 sm:mt-8 sm:gap-6 md:grid-cols-2">
           {/* Withdraw form */}
-          <form onSubmit={submitWithdraw} className="rounded-2xl border border-border bg-card p-8">
+          <form onSubmit={submitWithdraw} className="rounded-2xl border border-border bg-card p-6 sm:p-8">
             <div className="flex items-center gap-2 text-primary">
               <ArrowDownToLine className="h-5 w-5 text-gold" />
-              <h2 className="font-serif text-2xl">Initiate withdrawal</h2>
+              <h2 className="font-serif text-xl sm:text-2xl">Initiate withdrawal</h2>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">A 10% gas fee applies to all outgoing transfers.</p>
 
@@ -223,11 +225,12 @@ function Dashboard() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="grid gap-2">
                   <Label htmlFor="routing">Routing number</Label>
                   <Input id="routing" required value={form.routing_number} onChange={(e) => setForm({ ...form, routing_number: e.target.value })} placeholder="011000015" />
                 </div>
+
                 <div className="grid gap-2">
                   <Label htmlFor="account">Account number</Label>
                   <Input id="account" required value={form.account_number} onChange={(e) => setForm({ ...form, account_number: e.target.value })} placeholder="021000021" />
@@ -253,10 +256,10 @@ function Dashboard() {
           </form>
 
           {/* History */}
-          <div className="rounded-2xl border border-border bg-card p-8">
+          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
             <div className="flex items-center gap-2 text-primary">
               <Clock className="h-5 w-5 text-gold" />
-              <h2 className="font-serif text-2xl">Withdrawal history</h2>
+              <h2 className="font-serif text-xl sm:text-2xl">Withdrawal history</h2>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">All your initiated withdrawals.</p>
 
