@@ -39,16 +39,16 @@ function ContactPage() {
       <Navbar />
 
       <section className="border-b border-border bg-primary text-primary-foreground">
-        <div className="mx-auto max-w-7xl px-6 py-20">
-          <h1 className="font-serif text-5xl">We're here, across the USA.</h1>
-          <p className="mt-4 max-w-xl text-primary-foreground/75">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
+          <h1 className="font-serif text-4xl sm:text-5xl">We're here, across the USA.</h1>
+          <p className="mt-4 max-w-xl text-sm text-primary-foreground/75 sm:text-base">
             Whether you'd like to open an account, ask about a loan, or speak to a grant officer — our team responds within one business day.
           </p>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-2">
-        <div className="space-y-6">
+      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 sm:py-20 md:grid-cols-2 md:gap-12">
+        <div className="space-y-4 sm:space-y-6">
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-3 text-primary"><MapPin className="h-5 w-5 text-gold" /><span className="font-medium">Headquarters</span></div>
             <p className="mt-3 text-sm text-muted-foreground">270 Park Avenue<br />New York, NY 10017, USA</p>
@@ -59,7 +59,7 @@ function ContactPage() {
           </div>
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-3 text-primary"><Mail className="h-5 w-5 text-gold" /><span className="font-medium">Email</span></div>
-            <p className="mt-3 text-sm text-muted-foreground">care@horizon-bank.us<br />loans@horizon-bank.us</p>
+            <p className="mt-3 break-words text-sm text-muted-foreground">care@horizon-bank.us<br />loans@horizon-bank.us</p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-3 text-primary"><Clock className="h-5 w-5 text-gold" /><span className="font-medium">Hours</span></div>
@@ -67,7 +67,7 @@ function ContactPage() {
           </div>
         </div>
 
-        <form onSubmit={onSubmit} className="rounded-2xl border border-border bg-card p-8">
+        <form onSubmit={onSubmit} className="rounded-2xl border border-border bg-card p-6 sm:p-8">
           <h2 className="font-serif text-2xl text-primary">Send us a message</h2>
           <p className="mt-2 text-sm text-muted-foreground">We'll reply within one business day.</p>
 
@@ -88,12 +88,13 @@ function ContactPage() {
               <Label htmlFor="message">Message</Label>
               <Textarea id="message" required rows={5} placeholder="Tell us how we can help…" />
             </div>
-            <Button type="submit" disabled={sending} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button type="submit" disabled={sending} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
               {sending ? "Sending…" : "Send message"}
             </Button>
           </div>
         </form>
       </section>
+
 
       <Footer />
     </div>
