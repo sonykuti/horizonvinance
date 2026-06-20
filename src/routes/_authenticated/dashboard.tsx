@@ -272,16 +272,16 @@ function Dashboard() {
               {withdrawals.map((w) => (
                 <div key={w.id} className="rounded-lg border border-border bg-background p-4">
                   <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="font-medium text-foreground">{w.bank_name}</div>
-                      <div className="text-xs text-muted-foreground">
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate font-medium text-foreground">{w.bank_name}</div>
+                      <div className="truncate text-xs text-muted-foreground">
                         Acct ••{w.account_number.slice(-4)} · Routing {w.routing_number}
                       </div>
                       <div className="mt-1 text-xs text-muted-foreground">
                         {new Date(w.created_at).toLocaleString()}
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="shrink-0 text-right">
                       <div className="font-mono text-sm text-foreground">-{usd(Number(w.total))}</div>
                       <div className="text-[10px] text-muted-foreground">incl. {usd(Number(w.gas_fee))} fee</div>
                       <span
