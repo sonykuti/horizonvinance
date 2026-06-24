@@ -26,6 +26,8 @@ const US_BANKS = [
   "Goldman Sachs",
   "Capital One",
   "TD Bank",
+  "Northern Bank",
+  "Eastern Bank",
 ];
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
