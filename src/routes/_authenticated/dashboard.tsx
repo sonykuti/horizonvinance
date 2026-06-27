@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowDownToLine, Wallet, Clock, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowDownToLine, Wallet, Clock, CheckCircle2, Loader2, Send, ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { supabase as _supabase } from "@/integrations/supabase/client";
 const supabase = _supabase as unknown as {
   auth: typeof _supabase.auth;
   from: (table: string) => any;
+  rpc: (fn: string, args?: any) => any;
 };
 import { toast } from "sonner";
 
@@ -58,6 +59,19 @@ type Withdrawal = {
   created_at: string;
 };
 
+type Transfer = {
+  id: string;
+  sender_id: string;
+  recipient_id: string;
+  sender_account: string;
+  recipient_account: string;
+  recipient_name: string | null;
+  amount: number;
+  note: string | null;
+  status: string;
+  created_at: string;
+};
+
 function usd(n: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
 }
@@ -81,7 +95,6 @@ function Dashboard() {
       const { data, error } = await supabase.from("profiles").select("*").eq("id", userId!).maybeSingle();
       if (error) throw error;
       if (data) return data as Profile;
-      // Fallback: create a profile if the signup trigger didn't (e.g. legacy users)
       const acct = "HRZ-" + Math.floor(Math.random() * 1e9).toString().padStart(9, "0");
       const fullName =
         user?.user_metadata?.full_name ||
@@ -111,8 +124,22 @@ function Dashboard() {
     },
   });
 
+  const transfersQ = useQuery({
+    queryKey: ["transfers", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("transfers")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Transfer[];
+    },
+  });
+
   const profile = profileQ.data;
   const withdrawals = withdrawalsQ.data ?? [];
+  const transfers = transfersQ.data ?? [];
 
   const [form, setForm] = useState({ bank_name: "", routing_number: "", account_number: "", amount: "" });
   const amountNum = Number(form.amount) || 0;
@@ -128,7 +155,7 @@ function Dashboard() {
 
     setSubmitting(true);
     try {
-      const { error } = await (supabase as any).rpc("process_withdrawal", {
+      const { error } = await supabase.rpc("process_withdrawal", {
         p_bank_name: form.bank_name,
         p_routing_number: form.routing_number,
         p_account_number: form.account_number,
@@ -146,6 +173,112 @@ function Dashboard() {
       setSubmitting(false);
     }
   };
+
+  // Transfer state
+  const [transferForm, setTransferForm] = useState({ recipient_account: "", amount: "", note: "" });
+  const [recipientName, setRecipientName] = useState<string | null>(null);
+  const [recipientStatus, setRecipientStatus] = useState<"idle" | "checking" | "found" | "notfound">("idle");
+  const [transferring, setTransferring] = useState(false);
+  const transferAmount = Number(transferForm.amount) || 0;
+
+  const lookupRecipient = async () => {
+    const acct = transferForm.recipient_account.trim();
+    if (!acct) {
+      setRecipientName(null);
+      setRecipientStatus("idle");
+      return;
+    }
+    if (profile && acct === profile.account_number) {
+      setRecipientName(null);
+      setRecipientStatus("notfound");
+      return;
+    }
+    setRecipientStatus("checking");
+    const { data, error } = await supabase.rpc("lookup_recipient", { p_account: acct });
+    if (error || !data || (Array.isArray(data) && data.length === 0)) {
+      setRecipientName(null);
+      setRecipientStatus("notfound");
+      return;
+    }
+    const row = Array.isArray(data) ? data[0] : data;
+    setRecipientName(row?.full_name ?? "Harizon account");
+    setRecipientStatus("found");
+  };
+
+  const submitTransfer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId || !profile) return;
+    const acct = transferForm.recipient_account.trim();
+    if (!acct) return toast.error("Enter a recipient account");
+    if (profile.account_number === acct) return toast.error("You can't transfer to your own account");
+    if (transferAmount <= 0) return toast.error("Enter a transfer amount");
+    if (transferAmount > Number(profile.balance)) return toast.error("Insufficient balance");
+
+    setTransferring(true);
+    try {
+      const { error } = await supabase.rpc("process_transfer", {
+        p_recipient_account: acct,
+        p_amount: transferAmount,
+        p_note: transferForm.note || null,
+      });
+      if (error) throw error;
+      toast.success("Transfer completed");
+      setTransferForm({ recipient_account: "", amount: "", note: "" });
+      setRecipientName(null);
+      setRecipientStatus("idle");
+      qc.invalidateQueries({ queryKey: ["profile", userId] });
+      qc.invalidateQueries({ queryKey: ["transfers", userId] });
+    } catch (err: any) {
+      const msg = String(err?.message ?? "Transfer failed");
+      if (msg.includes("recipient account not found")) toast.error("Recipient account not found");
+      else if (msg.includes("insufficient")) toast.error("Insufficient balance");
+      else if (msg.includes("own account")) toast.error("You can't transfer to your own account");
+      else toast.error("Transfer failed");
+    } finally {
+      setTransferring(false);
+    }
+  };
+
+  // Merged activity feed
+  type Activity = {
+    id: string;
+    kind: "withdrawal" | "sent" | "received";
+    title: string;
+    subtitle: string;
+    amount: number;
+    sign: "-" | "+";
+    status: string;
+    created_at: string;
+  };
+
+  const activity: Activity[] = useMemo(() => {
+    const w: Activity[] = withdrawals.map((x) => ({
+      id: `w-${x.id}`,
+      kind: "withdrawal",
+      title: x.bank_name,
+      subtitle: `Acct ••${x.account_number.slice(-4)} · Routing ${x.routing_number}`,
+      amount: Number(x.total),
+      sign: "-",
+      status: x.status,
+      created_at: x.created_at,
+    }));
+    const t: Activity[] = transfers.map((x) => {
+      const isSender = x.sender_id === userId;
+      return {
+        id: `t-${x.id}`,
+        kind: isSender ? "sent" : "received",
+        title: isSender
+          ? `Transfer to ${x.recipient_name ?? x.recipient_account}`
+          : `Transfer from ${x.sender_account}`,
+        subtitle: isSender ? x.recipient_account : `${x.note ? x.note : "Internal transfer"}`,
+        amount: Number(x.amount),
+        sign: isSender ? "-" : "+",
+        status: x.status,
+        created_at: x.created_at,
+      };
+    });
+    return [...w, ...t].sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
+  }, [withdrawals, transfers, userId]);
 
 
   if (profileQ.isLoading) {
@@ -197,7 +330,8 @@ function Dashboard() {
             </div>
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between"><dt className="text-muted-foreground">Withdrawals</dt><dd>{withdrawals.length}</dd></div>
-              <div className="flex justify-between"><dt className="text-muted-foreground">Successful</dt><dd>{withdrawals.filter((w) => w.status === "successful" || w.status === "completed").length}</dd></div>
+              <div className="flex justify-between"><dt className="text-muted-foreground">Transfers</dt><dd>{transfers.length}</dd></div>
+              <div className="flex justify-between"><dt className="text-muted-foreground">Successful</dt><dd>{withdrawals.filter((w) => w.status === "successful" || w.status === "completed").length + transfers.filter((t) => t.status === "completed").length}</dd></div>
               <div className="flex justify-between"><dt className="text-muted-foreground">Pending</dt><dd>{withdrawals.filter((w) => w.status === "pending").length}</dd></div>
               <div className="flex justify-between"><dt className="text-muted-foreground">Failed</dt><dd>{withdrawals.filter((w) => w.status === "failed").length}</dd></div>
               <div className="flex justify-between"><dt className="text-muted-foreground">Member since</dt><dd>{profile?.created_at ? new Date(profile.created_at).getFullYear() : new Date().getFullYear()}</dd></div>
@@ -259,49 +393,135 @@ function Dashboard() {
             </div>
           </form>
 
-          {/* History */}
-          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+          {/* Internal Transfer form */}
+          <form onSubmit={submitTransfer} className="rounded-2xl border border-border bg-card p-6 sm:p-8">
             <div className="flex items-center gap-2 text-primary">
-              <Clock className="h-5 w-5 text-gold" />
-              <h2 className="font-serif text-xl sm:text-2xl">Withdrawal history</h2>
+              <Send className="h-5 w-5 text-gold" />
+              <h2 className="font-serif text-xl sm:text-2xl">Send to Harizon account</h2>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">All your initiated withdrawals.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Instant, fee-free transfers between Harizon accounts.</p>
 
-            <div className="mt-6 space-y-3">
-              {withdrawals.length === 0 && (
-                <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-                  No withdrawals yet.
+            <div className="mt-6 grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="recipient_account">Recipient account number</Label>
+                <Input
+                  id="recipient_account"
+                  required
+                  value={transferForm.recipient_account}
+                  onChange={(e) => {
+                    setTransferForm({ ...transferForm, recipient_account: e.target.value });
+                    setRecipientStatus("idle");
+                    setRecipientName(null);
+                  }}
+                  onBlur={lookupRecipient}
+                  placeholder="HRZ-123456789"
+                  className="font-mono"
+                />
+                {recipientStatus === "checking" && (
+                  <p className="text-xs text-muted-foreground">Looking up recipient…</p>
+                )}
+                {recipientStatus === "found" && recipientName && (
+                  <p className="text-xs text-emerald-600">✓ {recipientName}</p>
+                )}
+                {recipientStatus === "notfound" && (
+                  <p className="text-xs text-destructive">Account not found</p>
+                )}
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="transfer_amount">Amount (USD)</Label>
+                <Input
+                  id="transfer_amount"
+                  required
+                  type="number"
+                  min={1}
+                  step="0.01"
+                  value={transferForm.amount}
+                  onChange={(e) => setTransferForm({ ...transferForm, amount: e.target.value })}
+                  placeholder="250.00"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="note">Note (optional)</Label>
+                <Input
+                  id="note"
+                  value={transferForm.note}
+                  onChange={(e) => setTransferForm({ ...transferForm, note: e.target.value })}
+                  placeholder="Rent, dinner, etc."
+                  maxLength={120}
+                />
+              </div>
+
+              <div className="rounded-lg border border-border bg-background p-4 text-sm">
+                <div className="flex justify-between text-muted-foreground"><span>Amount</span><span>{usd(transferAmount)}</span></div>
+                <div className="flex justify-between text-muted-foreground"><span>Fee</span><span>{usd(0)}</span></div>
+                <div className="mt-2 flex justify-between border-t border-border pt-2 font-medium text-foreground">
+                  <span>Total debit</span><span>{usd(transferAmount)}</span>
                 </div>
-              )}
-              {withdrawals.map((w) => (
-                <div key={w.id} className="rounded-lg border border-border bg-background p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate font-medium text-foreground">{w.bank_name}</div>
-                      <div className="truncate text-xs text-muted-foreground">
-                        Acct ••{w.account_number.slice(-4)} · Routing {w.routing_number}
-                      </div>
-                      <div className="mt-1 text-xs text-muted-foreground">
-                        {new Date(w.created_at).toLocaleString()}
-                      </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={transferring || recipientStatus === "notfound"}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                {transferring ? "Sending…" : "Send transfer"}
+              </Button>
+            </div>
+          </form>
+        </div>
+
+        {/* Activity history */}
+        <div className="mt-6 rounded-2xl border border-border bg-card p-6 sm:mt-8 sm:p-8">
+          <div className="flex items-center gap-2 text-primary">
+            <Clock className="h-5 w-5 text-gold" />
+            <h2 className="font-serif text-xl sm:text-2xl">Activity history</h2>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground">Withdrawals and internal transfers.</p>
+
+          <div className="mt-6 space-y-3">
+            {activity.length === 0 && (
+              <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+                No activity yet.
+              </div>
+            )}
+            {activity.map((a) => (
+              <div key={a.id} className="rounded-lg border border-border bg-background p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex min-w-0 flex-1 items-start gap-3">
+                    <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                      a.kind === "received" ? "bg-emerald-100 text-emerald-700" :
+                      a.kind === "sent" ? "bg-primary/10 text-primary" :
+                      "bg-gold/20 text-primary"
+                    }`}>
+                      {a.kind === "received" ? <ArrowDownLeft className="h-4 w-4" /> :
+                       a.kind === "sent" ? <ArrowUpRight className="h-4 w-4" /> :
+                       <ArrowDownToLine className="h-4 w-4" />}
                     </div>
-                    <div className="shrink-0 text-right">
-                      <div className="font-mono text-sm text-foreground">-{usd(Number(w.total))}</div>
-                      <div className="text-[10px] text-muted-foreground">incl. {usd(Number(w.gas_fee))} fee</div>
-                      <span
-                        className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
-                          w.status === "pending"
-                            ? "bg-gold/20 text-gold-foreground"
-                            : "bg-emerald-100 text-emerald-700"
-                        }`}
-                      >
-                        {w.status === "pending" ? <Clock className="h-3 w-3" /> : <CheckCircle2 className="h-3 w-3" />} {w.status}
-                      </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate font-medium text-foreground">{a.title}</div>
+                      <div className="truncate text-xs text-muted-foreground">{a.subtitle}</div>
+                      <div className="mt-1 text-xs text-muted-foreground">{new Date(a.created_at).toLocaleString()}</div>
                     </div>
                   </div>
+                  <div className="shrink-0 text-right">
+                    <div className={`font-mono text-sm ${a.sign === "+" ? "text-emerald-600" : "text-foreground"}`}>
+                      {a.sign}{usd(a.amount)}
+                    </div>
+                    <span
+                      className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
+                        a.status === "pending"
+                          ? "bg-gold/20 text-gold-foreground"
+                          : "bg-emerald-100 text-emerald-700"
+                      }`}
+                    >
+                      {a.status === "pending" ? <Clock className="h-3 w-3" /> : <CheckCircle2 className="h-3 w-3" />} {a.status}
+                    </span>
+                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </main>
