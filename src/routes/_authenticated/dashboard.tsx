@@ -16,19 +16,21 @@ const supabase = _supabase as unknown as {
 import { toast } from "sonner";
 
 const US_BANKS = [
-  "Chase Bank",
   "Bank of America",
-  "Wells Fargo",
-  "Citigroup",
-  "U.S. Bancorp",
-  "PNC Financial Services",
-  "Truist Financial",
-  "Goldman Sachs",
   "Capital One",
-  "TD Bank",
-  "Northern Bank",
+  "Chase Bank",
+  "Citigroup",
   "Eastern Bank",
+  "Goldman Sachs",
+  "HCN Bank",
+  "Northern Bank",
+  "PNC Financial Services",
+  "TD Bank",
+  "Truist Financial",
+  "U.S. Bancorp",
+  "Wells Fargo",
 ];
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — Harizon Financial" }] }),
