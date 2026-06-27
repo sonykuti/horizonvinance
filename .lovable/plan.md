@@ -1,23 +1,34 @@
-## Why sign-up / login isn't responding
+## Add Internal Transfers Between Harizon Accounts
 
-Two issues:
+Let users send funds from their available balance to another Harizon account (by account number, e.g. `HRZ-XXXXXXXXX`) instantly, with no gas fee. Sender is debited, recipient is credited, and both see the transfer in their history.
 
-1. **Database tables don't exist.** The `profiles` and `withdrawals` tables from the previous migration file were never applied to the backend. The dashboard query fails silently after login.
-2. **Email confirmation is on.** Sign-up succeeds but returns no session — Supabase is waiting for the user to click a confirmation link. Login then fails with "Email not confirmed."
+### Database (one migration)
 
-## Plan
+1. New table `public.transfers`:
+   - `sender_id uuid` (auth user), `recipient_id uuid`
+   - `sender_account text`, `recipient_account text`, `recipient_name text`
+   - `amount numeric`, `note text`, `status text default 'completed'`
+   - `created_at timestamptz`
+   - GRANTs for `authenticated` + `service_role`; RLS: sender or recipient can SELECT; deny direct INSERT/UPDATE/DELETE (writes only via RPC).
 
-1. **Apply the SQL migration** in `supabase/migrations/20260616174348_init_horizon_bank.sql` to create:
-   - `profiles` (UID, account number, €50,000 starting balance)
-   - `withdrawals` (bank name, routing #, account #, amount, 10% gas fee, status)
-   - `handle_new_user()` trigger to auto-create a profile on sign-up
-   - RLS policies + GRANTs
+2. New SECURITY DEFINER function `public.process_transfer(p_recipient_account text, p_amount numeric, p_note text)`:
+   - Validates auth, positive amount, recipient exists, recipient ≠ sender, sufficient balance.
+   - Locks both profile rows, debits sender, credits recipient (using `app.allow_balance_change='on'` like `process_withdrawal`).
+   - Inserts a `transfers` row, returns it.
 
-2. **Disable email confirmation** so users can sign up and immediately land on the dashboard for mock testing (matches the "mock transactions" goal).
+3. New SECURITY DEFINER function `public.lookup_recipient(p_account text)` returning `(full_name text)` so the sender can confirm the recipient name before submitting without exposing the whole profiles table.
 
-3. **Harden the auth page** to surface errors clearly (toast on failure, disable button while submitting) so future issues aren't silent.
+### UI (`src/routes/_authenticated/dashboard.tsx`)
 
-4. **Verify** by hitting `/rest/v1/profiles` after migration and doing a sign-up → dashboard round-trip in the preview browser.
+- Add a "Transfer" card next to the Withdraw card (stacks on mobile):
+  - Recipient account number input (auto-formats `HRZ-XXXXXXXXX`)
+  - On blur, calls `lookup_recipient` and shows recipient name or "Account not found"
+  - Amount input, optional note
+  - Submit calls `process_transfer` RPC; toast "Transfer completed", refreshes balance.
+- Extend transaction history to merge withdrawals + transfers (sent shown as `−$`, received as `+$`), sorted by date, with a Type column (Withdrawal / Sent / Received).
+- Update Quick stats to include a "Transfers" count.
 
-### Note on preview
-Supabase auth sometimes hangs in the Lovable in-app preview iframe due to the fetch proxy. If it still doesn't respond after the fixes, test on the published URL — that's a known platform quirk, not a code bug.
+### Out of scope
+- No external bank transfers (that stays in Withdraw).
+- No scheduled/recurring transfers.
+- No fees on internal transfers.

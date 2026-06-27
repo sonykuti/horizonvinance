@@ -44,6 +44,45 @@ export type Database = {
         }
         Relationships: []
       }
+      transfers: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          note: string | null
+          recipient_account: string
+          recipient_id: string
+          recipient_name: string | null
+          sender_account: string
+          sender_id: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          recipient_account: string
+          recipient_id: string
+          recipient_name?: string | null
+          sender_account: string
+          sender_id: string
+          status?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          note?: string | null
+          recipient_account?: string
+          recipient_id?: string
+          recipient_name?: string | null
+          sender_account?: string
+          sender_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -115,6 +154,34 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      lookup_recipient: {
+        Args: { p_account: string }
+        Returns: {
+          account_number: string
+          full_name: string
+        }[]
+      }
+      process_transfer: {
+        Args: { p_amount: number; p_note?: string; p_recipient_account: string }
+        Returns: {
+          amount: number
+          created_at: string
+          id: string
+          note: string | null
+          recipient_account: string
+          recipient_id: string
+          recipient_name: string | null
+          sender_account: string
+          sender_id: string
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "transfers"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       process_withdrawal: {
         Args: {
