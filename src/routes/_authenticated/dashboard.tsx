@@ -22,6 +22,7 @@ const US_BANKS = [
   "Chase Bank",
   "Citigroup",
   "Eastern Bank",
+  "Garden Savings FCU",
   "Goldman Sachs",
   "HCN Bank",
   "Northern Bank",
