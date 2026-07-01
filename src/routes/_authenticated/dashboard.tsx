@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowDownToLine, Wallet, Clock, CheckCircle2, Loader2, Send, ArrowDownLeft, ArrowUpRight } from "lucide-react";
+import { ArrowDownToLine, Wallet, Clock, CheckCircle2, Loader2, Send, ArrowDownLeft, ArrowUpRight, Download } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -279,6 +279,9 @@ function Dashboard() {
     sign: "-" | "+";
     status: string;
     created_at: string;
+    withdrawal?: Withdrawal;
+    transfer?: Transfer;
+    counterpartyLabel?: string;
   };
 
   const activity: Activity[] = useMemo(() => {
@@ -291,6 +294,7 @@ function Dashboard() {
       sign: "-",
       status: x.status,
       created_at: x.created_at,
+      withdrawal: x,
     }));
     const t: Activity[] = transfers.map((x) => {
       const isSender = x.sender_id === userId;
@@ -305,10 +309,115 @@ function Dashboard() {
         sign: isSender ? "-" : "+",
         status: x.status,
         created_at: x.created_at,
+        transfer: x,
+        counterpartyLabel: isSender
+          ? (x.recipient_name ?? x.recipient_account)
+          : x.sender_account,
       };
     });
     return [...w, ...t].sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
   }, [withdrawals, transfers, userId]);
+
+  const downloadReceipt = async (a: Activity) => {
+    try {
+      const { jsPDF } = await import("jspdf");
+      const doc = new jsPDF({ unit: "pt", format: "letter" });
+      const W = doc.internal.pageSize.getWidth();
+      const navy = [11, 31, 63] as const;
+      const gold = [193, 154, 60] as const;
+
+      // Header bar
+      doc.setFillColor(navy[0], navy[1], navy[2]);
+      doc.rect(0, 0, W, 90, "F");
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(20);
+      doc.text("Harizon Financial", 48, 44);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text("Transaction Receipt", 48, 64);
+      doc.setTextColor(gold[0], gold[1], gold[2]);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text(
+        a.kind === "withdrawal" ? "WITHDRAWAL" : a.kind === "sent" ? "TRANSFER SENT" : "TRANSFER RECEIVED",
+        W - 48,
+        44,
+        { align: "right" },
+      );
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(9);
+      doc.text(new Date(a.created_at).toLocaleString(), W - 48, 64, { align: "right" });
+
+      // Body
+      doc.setTextColor(20, 20, 20);
+      let y = 130;
+      const rawId = a.withdrawal?.id ?? a.transfer?.id ?? a.id;
+      const rows: Array<[string, string]> = [
+        ["Receipt ID", rawId],
+        ["Date", new Date(a.created_at).toLocaleString()],
+        ["Status", a.status.toUpperCase()],
+        ["Account holder", profile?.full_name ?? profile?.email ?? "—"],
+        ["Your account", profile?.account_number ?? "—"],
+      ];
+      if (a.withdrawal) {
+        rows.push(
+          ["Destination bank", a.withdrawal.bank_name],
+          ["Routing number", a.withdrawal.routing_number],
+          ["Destination account", a.withdrawal.account_number],
+          ["Amount", usd(Number(a.withdrawal.amount))],
+          ["Gas fee (10%)", usd(Number(a.withdrawal.gas_fee))],
+          ["Total debited", usd(Number(a.withdrawal.total))],
+        );
+      } else if (a.transfer) {
+        rows.push(
+          [a.kind === "sent" ? "Recipient" : "Sender", a.counterpartyLabel ?? "—"],
+          [a.kind === "sent" ? "Recipient account" : "Sender account",
+            a.kind === "sent" ? a.transfer.recipient_account : a.transfer.sender_account],
+          ["Amount", usd(Number(a.transfer.amount))],
+          ["Fee", usd(0)],
+          [a.kind === "sent" ? "Total debited" : "Total credited", usd(Number(a.transfer.amount))],
+        );
+        if (a.transfer.note) rows.push(["Note", a.transfer.note]);
+      }
+
+      doc.setDrawColor(230, 230, 230);
+      doc.setFontSize(11);
+      rows.forEach(([k, v]) => {
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(110, 110, 110);
+        doc.text(k, 48, y);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(20, 20, 20);
+        doc.text(String(v), W - 48, y, { align: "right" });
+        doc.line(48, y + 6, W - 48, y + 6);
+        y += 26;
+      });
+
+      // Footer
+      y += 20;
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(9);
+      doc.setTextColor(120, 120, 120);
+      doc.text(
+        "This receipt is generated electronically and is valid without a signature.",
+        W / 2,
+        y,
+        { align: "center" },
+      );
+      doc.text("Harizon Financial · Member FDIC · support@harizonfinancial.com", W / 2, y + 14, {
+        align: "center",
+      });
+
+      const fname = `harizon-receipt-${rawId.slice(0, 8)}.pdf`;
+      doc.save(fname);
+      toast.success("Receipt downloaded", { description: fname });
+    } catch (err: any) {
+      toast.error("Could not generate receipt", { description: String(err?.message ?? err) });
+    }
+  };
+
 
 
   if (profileQ.isLoading) {
@@ -580,6 +689,17 @@ function Dashboard() {
                     >
                       {a.status === "pending" ? <Clock className="h-3 w-3" /> : <CheckCircle2 className="h-3 w-3" />} {a.status}
                     </span>
+                    <div className="mt-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => downloadReceipt(a)}
+                        className="h-7 gap-1 px-2 text-[11px]"
+                      >
+                        <Download className="h-3 w-3" /> Receipt
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
