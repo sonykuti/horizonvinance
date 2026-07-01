@@ -689,6 +689,17 @@ function Dashboard() {
                     >
                       {a.status === "pending" ? <Clock className="h-3 w-3" /> : <CheckCircle2 className="h-3 w-3" />} {a.status}
                     </span>
+                    <div className="mt-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => downloadReceipt(a)}
+                        className="h-7 gap-1 px-2 text-[11px]"
+                      >
+                        <Download className="h-3 w-3" /> Receipt
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
