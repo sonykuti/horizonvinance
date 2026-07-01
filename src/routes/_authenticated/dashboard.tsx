@@ -502,6 +502,38 @@ function Dashboard() {
           </form>
         </div>
 
+        <AlertDialog open={confirmOpen} onOpenChange={(o) => !transferring && setConfirmOpen(o)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm transfer</AlertDialogTitle>
+              <AlertDialogDescription asChild>
+                <div className="space-y-3 text-sm">
+                  <p>Please review the details before sending. Internal transfers are instant and cannot be reversed.</p>
+                  <div className="rounded-lg border border-border bg-background p-3 text-foreground">
+                    <div className="flex justify-between py-1"><span className="text-muted-foreground">Recipient</span><span className="font-medium">{recipientName ?? "—"}</span></div>
+                    <div className="flex justify-between py-1"><span className="text-muted-foreground">Account</span><span className="font-mono">{transferForm.recipient_account}</span></div>
+                    <div className="flex justify-between py-1"><span className="text-muted-foreground">Amount</span><span className="font-mono">{usd(transferAmount)}</span></div>
+                    {transferForm.note && (
+                      <div className="flex justify-between py-1"><span className="text-muted-foreground">Note</span><span className="max-w-[60%] truncate">{transferForm.note}</span></div>
+                    )}
+                  </div>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={transferring}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={transferring}
+                onClick={(e) => { e.preventDefault(); submitTransfer(); }}
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                {transferring ? "Sending…" : `Send ${usd(transferAmount)}`}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+
         {/* Activity history */}
         <div className="mt-6 rounded-2xl border border-border bg-card p-6 sm:mt-8 sm:p-8">
           <div className="flex items-center gap-2 text-primary">
