@@ -216,7 +216,9 @@ function Dashboard() {
     setRecipientStatus("found");
   };
 
-  const submitTransfer = async (e: React.FormEvent) => {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const openTransferConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId || !profile) return;
     const acct = transferForm.recipient_account.trim();
@@ -224,7 +226,18 @@ function Dashboard() {
     if (profile.account_number === acct) return toast.error("You can't transfer to your own account");
     if (transferAmount <= 0) return toast.error("Enter a transfer amount");
     if (transferAmount > Number(profile.balance)) return toast.error("Insufficient balance");
+    if (recipientStatus === "notfound") return toast.error("Recipient account not found");
+    if (recipientStatus !== "found") {
+      toast.message("Verifying recipient…", { description: "Please wait a moment and try again." });
+      lookupRecipient();
+      return;
+    }
+    setConfirmOpen(true);
+  };
 
+  const submitTransfer = async () => {
+    if (!userId || !profile) return;
+    const acct = transferForm.recipient_account.trim();
     setTransferring(true);
     try {
       const { error } = await supabase.rpc("process_transfer", {
@@ -233,18 +246,24 @@ function Dashboard() {
         p_note: transferForm.note || null,
       });
       if (error) throw error;
-      toast.success("Transfer completed");
+      toast.success("Transfer completed", {
+        description: `${usd(transferAmount)} sent to ${recipientName ?? acct}.`,
+      });
       setTransferForm({ recipient_account: "", amount: "", note: "" });
       setRecipientName(null);
       setRecipientStatus("idle");
+      setConfirmOpen(false);
       qc.invalidateQueries({ queryKey: ["profile", userId] });
       qc.invalidateQueries({ queryKey: ["transfers", userId] });
     } catch (err: any) {
       const msg = String(err?.message ?? "Transfer failed");
-      if (msg.includes("recipient account not found")) toast.error("Recipient account not found");
-      else if (msg.includes("insufficient")) toast.error("Insufficient balance");
-      else if (msg.includes("own account")) toast.error("You can't transfer to your own account");
-      else toast.error("Transfer failed");
+      if (msg.includes("recipient account not found"))
+        toast.error("Transfer failed", { description: "Recipient account not found." });
+      else if (msg.includes("insufficient"))
+        toast.error("Transfer failed", { description: "Insufficient balance for this transfer." });
+      else if (msg.includes("own account"))
+        toast.error("Transfer failed", { description: "You can't transfer to your own account." });
+      else toast.error("Transfer failed", { description: msg });
     } finally {
       setTransferring(false);
     }
