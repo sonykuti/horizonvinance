@@ -424,7 +424,7 @@ function Dashboard() {
           </form>
 
           {/* Internal Transfer form */}
-          <form onSubmit={submitTransfer} className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+          <form onSubmit={openTransferConfirm} className="rounded-2xl border border-border bg-card p-6 sm:p-8">
             <div className="flex items-center gap-2 text-primary">
               <Send className="h-5 w-5 text-gold" />
               <h2 className="font-serif text-xl sm:text-2xl">Send to Harizon account</h2>
