@@ -21,6 +21,7 @@ import {
 import { supabase as _supabase } from "@/integrations/supabase/client";
 const supabase = _supabase as unknown as {
   auth: typeof _supabase.auth;
+  storage: typeof _supabase.storage;
   from: (table: string) => any;
   rpc: (fn: string, args?: any) => any;
 };
