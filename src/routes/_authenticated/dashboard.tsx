@@ -21,6 +21,7 @@ import {
 import { supabase as _supabase } from "@/integrations/supabase/client";
 const supabase = _supabase as unknown as {
   auth: typeof _supabase.auth;
+  storage: typeof _supabase.storage;
   from: (table: string) => any;
   rpc: (fn: string, args?: any) => any;
 };
@@ -37,6 +38,7 @@ const US_BANKS = [
   "HCN Bank",
   "Northern Bank",
   "PNC Financial Services",
+  "Stride Bank",
   "TD Bank",
   "Truist Financial",
   "U.S. Bancorp",
@@ -318,101 +320,152 @@ function Dashboard() {
     return [...w, ...t].sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
   }, [withdrawals, transfers, userId]);
 
-  const downloadReceipt = async (a: Activity) => {
-    try {
-      const { jsPDF } = await import("jspdf");
-      const doc = new jsPDF({ unit: "pt", format: "letter" });
-      const W = doc.internal.pageSize.getWidth();
-      const navy = [11, 31, 63] as const;
-      const gold = [193, 154, 60] as const;
+  const buildReceiptPdf = async (a: Activity) => {
+    const { jsPDF } = await import("jspdf");
+    // US Letter, 0.75" margins on all sides for print-friendliness
+    const doc = new jsPDF({ unit: "pt", format: "letter" });
+    const W = doc.internal.pageSize.getWidth();   // 612pt
+    const H = doc.internal.pageSize.getHeight();  // 792pt
+    const M = 54;                                 // 0.75in margin
+    const contentW = W - M * 2;
+    const navy = [11, 31, 63] as const;
+    const gold = [193, 154, 60] as const;
 
-      // Header bar
-      doc.setFillColor(navy[0], navy[1], navy[2]);
-      doc.rect(0, 0, W, 90, "F");
-      doc.setTextColor(255, 255, 255);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(20);
-      doc.text("Harizon Financial", 48, 44);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      doc.text("Transaction Receipt", 48, 64);
-      doc.setTextColor(gold[0], gold[1], gold[2]);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.text(
-        a.kind === "withdrawal" ? "WITHDRAWAL" : a.kind === "sent" ? "TRANSFER SENT" : "TRANSFER RECEIVED",
-        W - 48,
-        44,
-        { align: "right" },
+    doc.setProperties({
+      title: `Harizon Financial Receipt`,
+      subject: `Transaction receipt`,
+      author: "Harizon Financial",
+    });
+
+    // Header band (respects side margins)
+    const headerH = 84;
+    doc.setFillColor(navy[0], navy[1], navy[2]);
+    doc.rect(M, M, contentW, headerH, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text("Harizon Financial", M + 20, M + 34);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text("Transaction Receipt", M + 20, M + 54);
+    doc.setTextColor(gold[0], gold[1], gold[2]);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text(
+      a.kind === "withdrawal" ? "WITHDRAWAL" : a.kind === "sent" ? "TRANSFER SENT" : "TRANSFER RECEIVED",
+      W - M - 20, M + 34, { align: "right" },
+    );
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(9);
+    doc.text(new Date(a.created_at).toLocaleString(), W - M - 20, M + 54, { align: "right" });
+
+    // Body
+    doc.setTextColor(20, 20, 20);
+    let y = M + headerH + 32;
+    const rawId = a.withdrawal?.id ?? a.transfer?.id ?? a.id;
+    const rows: Array<[string, string]> = [
+      ["Receipt ID", rawId],
+      ["Date", new Date(a.created_at).toLocaleString()],
+      ["Status", a.status.toUpperCase()],
+      ["Account holder", profile?.full_name ?? profile?.email ?? "—"],
+      ["Your account", profile?.account_number ?? "—"],
+    ];
+    if (a.withdrawal) {
+      rows.push(
+        ["Destination bank", a.withdrawal.bank_name],
+        ["Routing number", a.withdrawal.routing_number],
+        ["Destination account", a.withdrawal.account_number],
+        ["Amount", usd(Number(a.withdrawal.amount))],
+        ["Gas fee (10%)", usd(Number(a.withdrawal.gas_fee))],
+        ["Total debited", usd(Number(a.withdrawal.total))],
       );
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(9);
-      doc.text(new Date(a.created_at).toLocaleString(), W - 48, 64, { align: "right" });
+    } else if (a.transfer) {
+      rows.push(
+        [a.kind === "sent" ? "Recipient" : "Sender", a.counterpartyLabel ?? "—"],
+        [a.kind === "sent" ? "Recipient account" : "Sender account",
+          a.kind === "sent" ? a.transfer.recipient_account : a.transfer.sender_account],
+        ["Amount", usd(Number(a.transfer.amount))],
+        ["Fee", usd(0)],
+        [a.kind === "sent" ? "Total debited" : "Total credited", usd(Number(a.transfer.amount))],
+      );
+      if (a.transfer.note) rows.push(["Note", a.transfer.note]);
+    }
 
-      // Body
+    doc.setDrawColor(230, 230, 230);
+    doc.setFontSize(11);
+    const rowH = 26;
+    rows.forEach(([k, v]) => {
+      // paginate if we'd cross the bottom margin
+      if (y > H - M - 60) {
+        doc.addPage();
+        y = M + 20;
+      }
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(110, 110, 110);
+      doc.text(k, M, y);
+      doc.setFont("helvetica", "bold");
       doc.setTextColor(20, 20, 20);
-      let y = 130;
+      const wrapped = doc.splitTextToSize(String(v), contentW * 0.6);
+      doc.text(wrapped, W - M, y, { align: "right" });
+      doc.line(M, y + 6, W - M, y + 6);
+      y += rowH + Math.max(0, (wrapped.length - 1) * 12);
+    });
+
+    // Footer pinned near bottom margin
+    const footerY = H - M - 20;
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(9);
+    doc.setTextColor(120, 120, 120);
+    doc.text(
+      "This receipt is generated electronically and is valid without a signature.",
+      W / 2, footerY - 14, { align: "center" },
+    );
+    doc.text("Harizon Financial · Member FDIC · support@harizonfinancial.com", W / 2, footerY, {
+      align: "center",
+    });
+
+    return { doc, rawId };
+  };
+
+  const triggerBlobDownload = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const downloadReceipt = async (a: Activity) => {
+    if (!userId) return;
+    try {
       const rawId = a.withdrawal?.id ?? a.transfer?.id ?? a.id;
-      const rows: Array<[string, string]> = [
-        ["Receipt ID", rawId],
-        ["Date", new Date(a.created_at).toLocaleString()],
-        ["Status", a.status.toUpperCase()],
-        ["Account holder", profile?.full_name ?? profile?.email ?? "—"],
-        ["Your account", profile?.account_number ?? "—"],
-      ];
-      if (a.withdrawal) {
-        rows.push(
-          ["Destination bank", a.withdrawal.bank_name],
-          ["Routing number", a.withdrawal.routing_number],
-          ["Destination account", a.withdrawal.account_number],
-          ["Amount", usd(Number(a.withdrawal.amount))],
-          ["Gas fee (10%)", usd(Number(a.withdrawal.gas_fee))],
-          ["Total debited", usd(Number(a.withdrawal.total))],
-        );
-      } else if (a.transfer) {
-        rows.push(
-          [a.kind === "sent" ? "Recipient" : "Sender", a.counterpartyLabel ?? "—"],
-          [a.kind === "sent" ? "Recipient account" : "Sender account",
-            a.kind === "sent" ? a.transfer.recipient_account : a.transfer.sender_account],
-          ["Amount", usd(Number(a.transfer.amount))],
-          ["Fee", usd(0)],
-          [a.kind === "sent" ? "Total debited" : "Total credited", usd(Number(a.transfer.amount))],
-        );
-        if (a.transfer.note) rows.push(["Note", a.transfer.note]);
+      const filename = `harizon-receipt-${rawId.slice(0, 8)}.pdf`;
+      const storagePath = `${userId}/${rawId}.pdf`;
+
+      // Try to fetch previously stored receipt first
+      const { data: existing } = await supabase.storage.from("receipts").download(storagePath);
+      if (existing) {
+        triggerBlobDownload(existing as Blob, filename);
+        toast.success("Receipt downloaded", { description: filename });
+        return;
       }
 
-      doc.setDrawColor(230, 230, 230);
-      doc.setFontSize(11);
-      rows.forEach(([k, v]) => {
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(110, 110, 110);
-        doc.text(k, 48, y);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(20, 20, 20);
-        doc.text(String(v), W - 48, y, { align: "right" });
-        doc.line(48, y + 6, W - 48, y + 6);
-        y += 26;
-      });
-
-      // Footer
-      y += 20;
-      doc.setFont("helvetica", "italic");
-      doc.setFontSize(9);
-      doc.setTextColor(120, 120, 120);
-      doc.text(
-        "This receipt is generated electronically and is valid without a signature.",
-        W / 2,
-        y,
-        { align: "center" },
-      );
-      doc.text("Harizon Financial · Member FDIC · support@harizonfinancial.com", W / 2, y + 14, {
-        align: "center",
-      });
-
-      const fname = `harizon-receipt-${rawId.slice(0, 8)}.pdf`;
-      doc.save(fname);
-      toast.success("Receipt downloaded", { description: fname });
+      // Otherwise generate, store, then download
+      const { doc } = await buildReceiptPdf(a);
+      const blob = doc.output("blob") as Blob;
+      const { error: upErr } = await supabase.storage
+        .from("receipts")
+        .upload(storagePath, blob, { contentType: "application/pdf", upsert: true });
+      if (upErr) {
+        // still deliver the PDF even if storage upload failed
+        console.warn("Receipt storage upload failed", upErr);
+      }
+      triggerBlobDownload(blob, filename);
+      toast.success("Receipt downloaded", { description: filename });
     } catch (err: any) {
       toast.error("Could not generate receipt", { description: String(err?.message ?? err) });
     }
