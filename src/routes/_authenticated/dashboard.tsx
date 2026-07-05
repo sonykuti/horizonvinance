@@ -37,6 +37,7 @@ const US_BANKS = [
   "HCN Bank",
   "Northern Bank",
   "PNC Financial Services",
+  "Stride Bank",
   "TD Bank",
   "Truist Financial",
   "U.S. Bancorp",
