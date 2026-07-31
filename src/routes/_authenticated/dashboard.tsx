@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowDownToLine, Wallet, Clock, CheckCircle2, Loader2, Send, ArrowDownLeft, ArrowUpRight, Download } from "lucide-react";
+import { ArrowDownToLine, Wallet, Clock, CheckCircle2, XCircle, Loader2, Send, ArrowDownLeft, ArrowUpRight, Download } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
