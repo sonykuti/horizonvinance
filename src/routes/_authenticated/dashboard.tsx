@@ -737,10 +737,19 @@ function Dashboard() {
                       className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
                         a.status === "pending"
                           ? "bg-gold/20 text-gold-foreground"
-                          : "bg-emerald-100 text-emerald-700"
+                          : a.status === "failed" || a.status === "cancelled" || a.status === "rejected"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-emerald-100 text-emerald-700"
                       }`}
                     >
-                      {a.status === "pending" ? <Clock className="h-3 w-3" /> : <CheckCircle2 className="h-3 w-3" />} {a.status}
+                      {a.status === "pending" ? (
+                        <Clock className="h-3 w-3" />
+                      ) : a.status === "failed" || a.status === "cancelled" || a.status === "rejected" ? (
+                        <XCircle className="h-3 w-3" />
+                      ) : (
+                        <CheckCircle2 className="h-3 w-3" />
+                      )}{" "}
+                      {a.status}
                     </span>
                     <div className="mt-2">
                       <Button
