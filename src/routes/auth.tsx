@@ -78,7 +78,7 @@ function AuthPage() {
           </div>
           <div>
             <div className="font-serif text-xl">Harizon Financial</div>
-            <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2002</div>
+            <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2003</div>
           </div>
         </Link>
         <div>

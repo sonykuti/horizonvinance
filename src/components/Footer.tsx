@@ -11,7 +11,7 @@ export function Footer() {
             </div>
             <div>
               <div className="font-serif text-lg">Harizon Financial</div>
-              <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2002</div>
+              <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60">Est. 2003</div>
             </div>
           </div>
           <p className="mt-4 text-sm text-primary-foreground/70">
