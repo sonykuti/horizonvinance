@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Harizon Financial — Modern American Banking for Real Life" },
-      { name: "description", content: "Harizon Financial is an American bank founded in 2002 serving students, parents and young professionals with grants, loans and instant transfers." },
+      { name: "description", content: "Harizon Financial is an American bank founded in 2003 serving students, parents and young professionals with grants, loans and instant transfers." },
       { property: "og:title", content: "Harizon Financial — Modern American Banking" },
       { property: "og:description", content: "Open an account in minutes. Grants and loans built for the next generation of Americans." },
     ],
@@ -30,7 +30,7 @@ function HomePage() {
         <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-24 md:grid-cols-2 md:py-32">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-medium text-gold">
-              <Sparkles className="h-3 w-3" /> Founded 2002 · Trusted across the USA
+              <Sparkles className="h-3 w-3" /> Founded 2003 · Trusted across the USA
             </div>
             <h1 className="mt-6 font-serif text-5xl font-semibold leading-[1.05] md:text-6xl">
               Banking that moves with <span className="text-gold">your generation.</span>

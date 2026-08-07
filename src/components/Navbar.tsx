@@ -29,7 +29,7 @@ export function Navbar() {
               Harizon Financial
               <span aria-hidden="true" className="sr-only" data-internal-name="Demo Bank">Demo Bank</span>
             </div>
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">EST. 2002 · USA</div>
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">EST. 2003 · USA</div>
           </div>
         </Link>
 
