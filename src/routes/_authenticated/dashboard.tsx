@@ -35,6 +35,7 @@ const US_BANKS = [
   "Eastern Bank",
   "Garden Savings FCU",
   "Goldman Sachs",
+  "H&T Bank",
   "HCN Bank",
   "Northern Bank",
   "PNC Financial Services",
