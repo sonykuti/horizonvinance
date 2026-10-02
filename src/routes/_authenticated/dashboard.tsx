@@ -180,8 +180,11 @@ function Dashboard() {
       setForm({ bank_name: "", routing_number: "", account_number: "", amount: "" });
       qc.invalidateQueries({ queryKey: ["profile", userId] });
       qc.invalidateQueries({ queryKey: ["withdrawals", userId] });
-    } catch {
-      toast.success("Withdrawal pending");
+    } catch (err: any) {
+      const msg = String(err?.message ?? "");
+      if (msg.includes("on hold"))
+        toast.error("Account on hold", { description: "Withdrawals are temporarily unavailable on this account." });
+      else toast.error("Withdrawal could not be processed", { description: msg });
     } finally {
       setSubmitting(false);
     }
@@ -261,6 +264,8 @@ function Dashboard() {
       const msg = String(err?.message ?? "Transfer failed");
       if (msg.includes("recipient account not found"))
         toast.error("Transfer failed", { description: "Recipient account not found." });
+      else if (msg.includes("on hold"))
+        toast.error("Account on hold", { description: "Transfers are temporarily unavailable on this account." });
       else if (msg.includes("insufficient"))
         toast.error("Transfer failed", { description: "Insufficient balance for this transfer." });
       else if (msg.includes("own account"))
